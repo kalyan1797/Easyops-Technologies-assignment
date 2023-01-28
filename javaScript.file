@@ -1,0 +1,51 @@
+var contactForm = document.getElementById("contact-form");
+var contactTable = document.getElementById("contact-table");
+var contactList = [];
+var contactCount = 0;
+
+contactForm.addEventListener("submit", function(event) {
+  event.preventDefault();
+  
+  var firstName = document.getElementById("first-name").value;
+  var lastName = document.getElementById("last-name").value;
+  var contactNumber = document.getElementById("contact-number").value;
+  
+  var existingContact = contactList.find(function(contact) {
+    return contact.number === contactNumber;
+  });
+  
+  if (existingContact) {
+    alert("Contact number already exists.");
+    return;
+  }
+  
+  var newContact = {
+    id: Date.now(),
+    name: firstName + " " + lastName,
+    number: contactNumber
+  };
+  
+  contactList.push(newContact);
+  
+  var newRow = contactTable.insertRow();
+  var slNoCell = newRow.insertCell();
+  var nameCell = newRow.insertCell();
+  var numberCell = newRow.insertCell();
+  var deleteCell = newRow.insertCell();
+  
+  slNoCell.innerHTML = ++contactCount;
+  nameCell.innerHTML = newContact.name;
+  numberCell.innerHTML = newContact.number;
+  
+  var deleteButton = document.createElement("button");
+  deleteButton.innerHTML = "Delete";
+  deleteButton.addEventListener("click", function() {
+    contactList = contactList.filter(function(contact) {
+      return contact.id !== newContact.id;
+    });
+    
+    newRow.remove();
+    --contactCount;
+  });
+  deleteCell.appendChild(deleteButton);
+});
